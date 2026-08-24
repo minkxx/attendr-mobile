@@ -6,8 +6,8 @@ export const authClient = createAuthClient({
   baseURL: process.env.EXPO_PUBLIC_BACKEND_URL,
   plugins: [
     expoClient({
-      scheme: "attendease",
-      storagePrefix: "attendease_auth",
+      scheme: "attendr",
+      storagePrefix: "attendr_auth",
       storage: SecureStore,
     }),
   ],
