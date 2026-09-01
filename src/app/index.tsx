@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import * as Sentry from "@sentry/react-native";
 
 const GEOFENCE_TASK = "BACKGROUND_GEOFENCE_TASK";
 
@@ -16,6 +17,7 @@ TaskManager.defineTask(
   GEOFENCE_TASK,
   async ({ data, error }: { data: any; error: any }) => {
     if (error) {
+      Sentry.captureException(error);
       console.error("Geofence Task Error:", error.message);
       return;
     }
@@ -23,9 +25,21 @@ TaskManager.defineTask(
     const { eventType, region } = data;
 
     if (eventType === Location.GeofencingEventType.Enter) {
+      Sentry.addBreadcrumb({
+        category: "geofence",
+        message: `Entered region: ${region.identifier}`,
+        level: "info",
+      });
+
       console.log(`[Task] You have ENTERED the region: ${region.identifier}`);
       DeviceEventEmitter.emit("onGeofenceEvent", true);
     } else if (eventType === Location.GeofencingEventType.Exit) {
+      Sentry.addBreadcrumb({
+        category: "geofence",
+        message: `Exited region: ${region.identifier}`,
+        level: "info",
+      });
+
       console.log(`[Task] You have EXITED the region: ${region.identifier}`);
       DeviceEventEmitter.emit("onGeofenceEvent", false);
     }
@@ -40,6 +54,20 @@ export default function Index() {
 
   const [currentCoords, setCurrentCoords] = useState<Coordinates | null>(null);
   const [fenceCoords, setFenceCoords] = useState<Coordinates | null>(null);
+
+  useEffect(() => {
+    // TODO: Replace with actual logged in user data
+    Sentry.setUser({
+      id: "student_12345",
+      username: "johndoe",
+      email: "john.doe@university.edu",
+    });
+
+    // Clear user on unmount or when they log out
+    return () => {
+      Sentry.setUser(null);
+    };
+  }, []);
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -58,21 +86,31 @@ export default function Index() {
 
     let locationWatcher: Location.LocationSubscription | null = null;
     const startWatchingLocation = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === "granted") {
-        locationWatcher = await Location.watchPositionAsync(
-          {
-            accuracy: Location.Accuracy.Balanced,
-            timeInterval: 2000,
-            distanceInterval: 1,
-          },
-          (location) => {
-            setCurrentCoords({
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            });
-          },
-        );
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === "granted") {
+          locationWatcher = await Location.watchPositionAsync(
+            {
+              accuracy: Location.Accuracy.Balanced,
+              timeInterval: 2000,
+              distanceInterval: 1,
+            },
+            (location) => {
+              setCurrentCoords({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+              });
+            },
+          );
+        } else {
+          Sentry.addBreadcrumb({
+            category: "permissions",
+            message: "User denied foreground location permission",
+            level: "warning",
+          });
+        }
+      } catch (err) {
+        Sentry.captureException(err);
       }
     };
     startWatchingLocation();
@@ -120,6 +158,12 @@ export default function Index() {
   };
 
   const startGeofencing = async () => {
+    Sentry.addBreadcrumb({
+      category: "ui.action",
+      message: "Student tapped Start Geofencing",
+      level: "info",
+    });
+
     const granted = await requestPermissions();
     if (!granted) return;
 
@@ -144,7 +188,6 @@ export default function Index() {
 
       await Location.startGeofencingAsync(GEOFENCE_TASK, regions);
       setIsTracking(true);
-
       setInsideFence(true);
 
       Alert.alert(
@@ -153,11 +196,18 @@ export default function Index() {
       );
     } catch (err: any) {
       console.error(err);
+      Sentry.captureException(err);
       Alert.alert("Error", "Failed to start geofencing.");
     }
   };
 
   const stopGeofencing = async () => {
+    Sentry.addBreadcrumb({
+      category: "ui.action",
+      message: "Student tapped Stop Geofencing",
+      level: "info",
+    });
+
     try {
       await Location.stopGeofencingAsync(GEOFENCE_TASK);
       setIsTracking(false);
@@ -166,6 +216,7 @@ export default function Index() {
       Alert.alert("Stopped", "Geofencing has been stopped.");
     } catch (err) {
       console.error(err);
+      Sentry.captureException(err);
     }
   };
 
