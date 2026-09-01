@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
+import { Alert, Button, TextInput, View } from "react-native";
 import { authClient } from "../../api/auth-client";
 
 export const LoginScreen = () => {
@@ -20,31 +20,19 @@ export const LoginScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <TextInput
         placeholder="Email Address"
         value={email}
         onChangeText={setEmail}
-        style={styles.input}
       />
       <TextInput
         placeholder="Password"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
-        style={styles.input}
       />
       <Button title="Sign In" onPress={handleLogin} color="#4f46e5" />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
-  input: {
-    borderBottomWidth: 1,
-    borderColor: "#ccc",
-    marginBottom: 20,
-    padding: 8,
-  },
-});
