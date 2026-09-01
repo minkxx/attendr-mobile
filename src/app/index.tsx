@@ -1,3 +1,4 @@
+import { calculateDistance } from "@/utils/calculate_distance";
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import { useEffect, useState } from "react";
@@ -34,7 +35,6 @@ TaskManager.defineTask(
 type Coordinates = { latitude: number; longitude: number };
 
 export default function Index() {
-  const [hasPermissions, setHasPermissions] = useState(false);
   const [isTracking, setIsTracking] = useState(false);
   const [insideFence, setInsideFence] = useState(false);
 
@@ -85,6 +85,16 @@ export default function Index() {
     };
   }, []);
 
+  let distanceFromGeofence: number | null = null;
+  if (currentCoords && fenceCoords) {
+    distanceFromGeofence = calculateDistance(
+      currentCoords.latitude,
+      currentCoords.longitude,
+      fenceCoords.latitude,
+      fenceCoords.longitude,
+    );
+  }
+
   const requestPermissions = async () => {
     const { status: foregroundStatus } =
       await Location.requestForegroundPermissionsAsync();
@@ -106,7 +116,6 @@ export default function Index() {
       return false;
     }
 
-    setHasPermissions(true);
     return true;
   };
 
@@ -199,6 +208,17 @@ export default function Index() {
             {isTracking ? "Stop Geofencing" : "Start Geofencing"}
           </Text>
         </TouchableOpacity>
+
+        <View className="w-full px-8 mt-4 items-center">
+          <Text className="text-gray-300 font-bold mb-1">Live Distance:</Text>
+          <Text className="text-yellow-400 font-bold text-xl">
+            {distanceFromGeofence !== null
+              ? `${distanceFromGeofence.toFixed(2)} meters`
+              : isTracking
+                ? "Calculating..."
+                : "Geofence Inactive"}
+          </Text>
+        </View>
 
         <Text
           className={`mt-8 text-xl text-center font-bold ${insideFence ? "text-green-400" : "text-red-400"}`}
