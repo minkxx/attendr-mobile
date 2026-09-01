@@ -1,26 +1,28 @@
-import { authClient } from "@/api/auth-client";
-import { LoginScreen } from "@/features/auth/LoginScreen";
 import { Stack } from "expo-router";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import "../global.css";
 
 export default function RootLayout() {
-  const { data: session, isPending } = authClient.useSession();
-  if (isPending) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#4f46e5" />
-      </View>
-    );
-  }
-
-  if (!session) {
-    return <LoginScreen />;
-  }
-
-  return <Stack />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <StatusBar style="auto" />
+        <SafeAreaView
+          edges={["top"]}
+          style={{ flex: 1, backgroundColor: "#0e0e0e" }}
+        >
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: "#0e0e0e" },
+            }}
+          >
+            <Stack.Screen name="index" />
+          </Stack>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
+  );
 }
-
-const styles = StyleSheet.create({
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
-});
