@@ -2,6 +2,7 @@ import { authClient } from "@/api/auth-client";
 import { LoginScreen } from "@/features/auth/LoginScreen";
 import { Stack } from "expo-router";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
+import "../global.css";
 
 export default function RootLayout() {
   const { data: session, isPending } = authClient.useSession();
