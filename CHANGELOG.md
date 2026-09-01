@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2](https://github.com/minkxx/attendr-mobile/compare/v0.0.1...v0.0.2) (2026-09-01)
+
+### Features
+
+- add @sentry/react-native dependency ([bcbf580](https://github.com/minkxx/attendr-mobile/commit/bcbf58057d61a0e876e5ca826e601ff4ce2e5651))
+- add distance calculation for geofencing ([d54b523](https://github.com/minkxx/attendr-mobile/commit/d54b5232476b2c64802f07b4835a8f2354c84d63))
+- add Sentry configuration variables to .env.example ([ac9ad8e](https://github.com/minkxx/attendr-mobile/commit/ac9ad8e181906e3f4c178b95986453cce1e1f3a2))
+- enhance Sentry integration for geofencing tasks and user actions ([3e7bb7d](https://github.com/minkxx/attendr-mobile/commit/3e7bb7d44aaffd76a5770f9db6c97653677e3362))
+- initialize Sentry for error tracking in RootLayout component ([9d2a541](https://github.com/minkxx/attendr-mobile/commit/9d2a541185178cd72256a2cc1a704c4f030d4338))
+- integrate Sentry for error tracking in the app ([204577c](https://github.com/minkxx/attendr-mobile/commit/204577c550d7020164d21912271f3163eedb9da5))
+- update metro configuration to use Sentry Expo config ([6dcfb4e](https://github.com/minkxx/attendr-mobile/commit/6dcfb4e7e1bd4953a459d517134ae09ee79951ef))
+
+### Bug Fixes
+
+- app crashing on geofence start ([39f06c5](https://github.com/minkxx/attendr-mobile/commit/39f06c5160f30658172d8fd43497472743f46793))
+
 ### 0.0.1 (2026-09-01)
 
 ### Features
