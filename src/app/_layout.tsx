@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import "../global.css";
+import { useEffect } from "react";
 
 Sentry.init({
   dsn: "https://45d070fce6e1dc5909aac152843e5229@o4512013009747968.ingest.us.sentry.io/4512013022986240",
@@ -12,6 +13,20 @@ Sentry.init({
 });
 
 function RootLayout() {
+  useEffect(() => {
+    // TODO: Replace with actual logged in user data
+    Sentry.setUser({
+      id: "student_12345",
+      username: "johndoe",
+      email: "john.doe@university.edu",
+    });
+
+    // Clear user on unmount or when they log out
+    return () => {
+      Sentry.setUser(null);
+    };
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
