@@ -27,7 +27,7 @@
   "dependencies": {
     "@better-auth/expo": "^1.6.23",
     "@expo/ui": "~57.0.16",
-    "@sentry/react-native": "~7.11.0",
+    "@sentry/react-native": "~8.25.0",
     "better-auth": "^1.6.23",
     "expo": "~57.0.20",
     "expo-constants": "~57.0.17",
