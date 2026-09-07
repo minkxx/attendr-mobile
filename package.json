@@ -70,7 +70,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",
     "prettier": "^3.9.4",
-    "prettier-plugin-tailwindcss": "^0.5.14",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "standard-version": "^9.5.0",
     "standard-version-expo": "^1.0.3",
     "tailwindcss": "^3.4.19",
